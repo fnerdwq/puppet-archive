@@ -1,8 +1,6 @@
 Archive Puppet Module
 ====================
 
-[![Build Status](https://secure.travis-ci.org/camptocamp/puppet-archive.png)](http://travis-ci.org/camptocamp/puppet-archive)
-
 Overview
 --------
 
