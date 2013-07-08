@@ -80,6 +80,7 @@ define archive::download (
               creates => "${src_target}/${name}.${digest_type}",
               timeout => $timeout,
               notify  => Exec["download archive $name and check sum"],
+              path  => "/usr/local/bin:/usr/bin:/bin",
               require => Package['curl'],
             }
 
@@ -121,6 +122,7 @@ define archive::download (
     present: {
       exec {"download archive $name and check sum":
         command   => "curl ${insecure_arg} -o ${src_target}/${name} ${url}",
+        path  => "/usr/local/bin:/usr/bin:/bin",
         creates   => "${src_target}/${name}",
         logoutput => true,
         timeout   => $timeout,
@@ -139,6 +141,7 @@ define archive::download (
         command     => "rm -f ${src_target}/${name} ${src_target}/${name}.${digest_type} && exit 1",
         unless      => $checksum_cmd,
         cwd         => $src_target,
+        path  => "/usr/local/bin:/usr/bin:/bin",
         refreshonly => true,
       }
     }
