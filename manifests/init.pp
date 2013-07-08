@@ -17,6 +17,7 @@ Parameters:
 - *$extension: Default value ".tar.gz"
 - *$timeout: Default value 120
 - *$allow_insecure: Default value false
+- *$onlyif: Expression console to test if we have to execute this class
 
 Example usage:
 
@@ -40,27 +41,31 @@ define archive (
   $extension='tar.gz',
   $src_target='/usr/src',
   $allow_insecure=false,
+  $onlyif = 0,
 ) {
 
-  archive::download {"${name}.${extension}":
-    ensure         => $ensure,
-    url            => $url,
-    checksum       => $checksum,
-    digest_url     => $digest_url,
-    digest_string  => $digest_string,
-    digest_type    => $digest_type,
-    timeout        => $timeout,
-    src_target     => $src_target,
-    allow_insecure => $allow_insecure,
+  if $onlyif == 0 {
+    archive::download {"${name}.${extension}":
+      ensure         => $ensure,
+      url            => $url,
+      checksum       => $checksum,
+      digest_url     => $digest_url,
+      digest_string  => $digest_string,
+      digest_type    => $digest_type,
+      timeout        => $timeout,
+      src_target     => $src_target,
+      allow_insecure => $allow_insecure,
+    }
+
+    archive::extract {$name:
+      ensure     => $ensure,
+      target     => $target,
+      src_target => $src_target,
+      root_dir   => $root_dir,
+      extension  => $extension,
+      timeout    => $timeout,
+      require    => Archive::Download["${name}.${extension}"]
+    }  
   }
 
-  archive::extract {$name:
-    ensure     => $ensure,
-    target     => $target,
-    src_target => $src_target,
-    root_dir   => $root_dir,
-    extension  => $extension,
-    timeout    => $timeout,
-    require    => Archive::Download["${name}.${extension}"]
-  }
 }
