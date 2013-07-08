@@ -37,6 +37,7 @@ define archive::extract (
   $src_target='/usr/src',
   $root_dir='',
   $extension='tar.gz',
+  $onlyif='true',
   $timeout=120) {
 
   if $root_dir != '' {
@@ -63,6 +64,7 @@ define archive::extract (
         },
         path  => "/usr/local/bin:/usr/bin:/bin",
         creates => $extract_dir,
+        onlyif => $onlyif,
         timeout => $timeout
       }
     }
