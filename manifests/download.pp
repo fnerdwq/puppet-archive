@@ -31,6 +31,7 @@ Example usage:
 define archive::download (
   $url,
   $ensure=present,
+  $redirects=true,
   $checksum=true,
   $digest_url='',
   $digest_string='',
@@ -42,6 +43,11 @@ define archive::download (
 
   $insecure_arg = $allow_insecure ? {
     true    => '-k',
+    default => '',
+  }
+  
+  $redirect_arg = $redirects ? {
+    true    => '-L',
     default => '',
   }
 
@@ -76,7 +82,7 @@ define archive::download (
             }
 
             exec {"download digest of archive $name":
-              command => "curl ${insecure_arg} -o ${src_target}/${name}.${digest_type} ${digest_src}",
+              command => "curl ${$redirect_arg} ${insecure_arg} -o ${src_target}/${name}.${digest_type} ${digest_src}",
               creates => "${src_target}/${name}.${digest_type}",
               timeout => $timeout,
               notify  => Exec["download archive $name and check sum"],
@@ -121,7 +127,7 @@ define archive::download (
   case $ensure {
     present: {
       exec {"download archive $name and check sum":
-        command   => "curl ${insecure_arg} -o ${src_target}/${name} ${url}",
+        command   => "curl ${$redirect_arg} ${insecure_arg} -o ${src_target}/${name} ${url}",
         path  => "/usr/local/bin:/usr/bin:/bin",
         creates   => "${src_target}/${name}",
         logoutput => true,

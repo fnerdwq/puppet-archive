@@ -1,5 +1,5 @@
 name 'jproyo-archive'
-version '0.0.4'
+version '0.0.5'
 source 'https://github.com/mxhero/puppet-modules/tree/master/modules/archive'
 author 'Juan Pablo Royo'
 license 'Apache 2.0'

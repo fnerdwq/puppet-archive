@@ -33,6 +33,7 @@ define archive (
   $target,
   $ensure=present,
   $checksum=true,
+  $redirects=true,
   $digest_url='',
   $digest_string='',
   $digest_type='md5',
@@ -46,6 +47,7 @@ define archive (
 
   archive::download {"${name}.${extension}":
     ensure         => $ensure,
+    redirects      => $redirects,
     url            => $url,
     checksum       => $checksum,
     digest_url     => $digest_url,
