@@ -63,11 +63,16 @@ define archive::extract (
         fail("Unknown extension value '${extension}'")
       }
 
+      file {$extract_dir:
+        ensure => directory,
+        notify => Exec["Unpack ${name}"],
+      }
+
       exec {"Unpack ${name}":
-        command => $unpack_command,
-        path    => $exec_path,
-        creates => $extract_dir,
-        timeout => $timeout
+        command     => $unpack_command,
+        path        => $exec_path,
+        timeout     => $timeout,
+        refreshonly => true,
       }
     }
     absent: {
